@@ -22,6 +22,7 @@ Refactor the code so that fead generation happens in under 1 second no matter ho
 2. The platform should be clean from security vulnerubilities. There seems to be a way or two for users to tamper with their friends feeds. We shouldn't allow that.
 3. A new engineer got in the team and is really not pleased with our current codebase. If there are any improvements in structure or separation of concerns, you are more than welcome to execute them.
 
+### ⚠️ Important ⚠️
 ```
 You are free to add or utilise any extra database that you may need in order to optimize the platform for the expected high feed reads.
 ```
