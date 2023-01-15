@@ -9,6 +9,8 @@ barking at each other. Is the system ready to grow that much and handle that loa
 1. php artisan migrate
 2. php artisan db:seed ( will take a while )
 
+Project has been setup to start with sail easily but using sail is not a requirement.
+
 ## Issues to fix 
 
 1. Barkers have reported that the site is slow, specially for users with high number of friends. Optimize the code to increase the performance.
@@ -35,3 +37,10 @@ You are free to add or utilise any extra database that you may need in order to 
 
 Ensure that all these conditions are met!
 
+
+## Submission
+
+You should fork the project and submit a pr with your changes when you are done.
+
+Good luck :)
+Or as our barkers say Bark bark, bark Bark!
