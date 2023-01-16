@@ -1,6 +1,6 @@
 # Bark Bark bark
 
-The new social network `Bark` has taken the world by the storm. What started in the basement of a dog has now become the most viral sensation of humans.
+The new social network `Bark` has taken the world by storm. What started in the basement of a dog has now become the most viral sensation of humans.
 For the first time dogs and humans are able to interact with each other. In the next 5 days the platform is expecting to attract more than 1million users
 barking at each other. Is the system ready to grow that much and handle that load? Are there any bugs that need to be fixed? Is the codebase ready so that the development team can increase? Are there any security vulnerabilities that need to be handled?
 
@@ -20,7 +20,7 @@ Project has been setup to start with sail easily but using sail is not a require
 ## Goals to achieve
 
 1. The platform should be optimized for reads. Writes to the database ( submitting barks ) are not so often and we don't really need to be super fast there. We just want to make sure that a bark will eventually be displayed to your friends feed. 
-Refactor the code so that fead generation happens in under 1 second no matter how many friends or barks a barker has.
+Refactor the code so that feed generation happens in under 1 second no matter how many friends or barks a barker has.
 2. The platform should be clean from security vulnerubilities. There seems to be a way or two for users to tamper with their friends feeds. We shouldn't allow that.
 3. A new engineer got in the team and is really not pleased with our current codebase. If there are any improvements in structure or separation of concerns, you are more than welcome to execute them.
 
