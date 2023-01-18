@@ -16,6 +16,7 @@ Project has been setup to start with sail easily but using sail is not a require
 1. Barkers have reported that the site is slow, specially for users with high number of friends. Optimize the code to increase the performance.
 2. Barkers have reported that when you have many barks either in your home feed or in your friends feed the data consumption is realy high. Refactor the code to reduce the amount of data is sent. Barkers usually see the first 10 barks in their feed and are not usually scrolling to the bottom.
 3. Barkers have reported that the error message ("Input is invalid") displayed when the submitted bark is invalid is not very helpful. How can we improve there and display what actually went wrong with the submitted bark message?
+4. Mew_social, the rival social platform that is full of mewers have leaked some data about our current user growth. It seems they have found a way to scrape our data and see the exact amount of barkers that are signed up. How can that be? Can this be fixed asap?
 
 ## Goals to achieve
 
