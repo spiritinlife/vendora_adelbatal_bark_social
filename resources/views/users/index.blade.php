@@ -21,6 +21,7 @@
         </style>
     </head>
     <body class="antialiased">
+        <h3>This page is not part of the excersice goals. It is only available so that you can easily get into a user.</h3>
         <ul>
             @foreach($users as $user)
                 <li><a href="/users/{{$user->id}}">User {{$user->id}}</a></li>

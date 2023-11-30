@@ -20,10 +20,10 @@ Project has been setup to start with sail easily but using sail is not a require
 
 ## Goals to achieve
 
-1. The platform should be optimized for reads. Writes to the database ( submitting barks ) are not so often and we don't really need to be super fast there. We just want to make sure that a bark will eventually be displayed to your friends feed. 
-Refactor the code so that feed generation happens in under 1 second no matter how many friends or barks a barker has.
-2. The platform should be clean from security vulnerubilities. There seems to be a way or two for users to tamper with their friends feeds. We shouldn't allow that.
-3. A new engineer got in the team and is really not pleased with our current codebase. If there are any improvements in structure or separation of concerns, you are more than welcome to execute them.
+1. The platform should be optimized for reads. We want to make sure that a bark will eventually be displayed to your friends feed. 
+Refactor the code so that the friends feed generation has the same response time no matter how many friends or barks a barker has.
+2. The platform should be clean from security vulnerubilities. There seems to be a way for users to tamper with their friends feeds. We shouldn't allow that.
+3. A new engineer got in the team and is really not pleased with our current codebase. He said that too many things happen in the controllers and that we are not taking advantage of laravel features even in routing. If there are any improvements in structure or separation of concerns, you are more than welcome to execute them. 
 
 ### ⚠️ Important ⚠️
 ```

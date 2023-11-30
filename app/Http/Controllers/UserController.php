@@ -25,9 +25,9 @@ class UserController extends Controller
             $friends = $user->friends;
             $feed = [];
             foreach ($friends as $friend) {
-               foreach ($friend->barks as $bark) {
+                foreach ($friend->barks as $bark) {
                     $feed []= $bark;
-               }
+                }
             }
         }
 

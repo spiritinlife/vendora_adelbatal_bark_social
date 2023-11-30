@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -15,7 +16,7 @@ class BarkController extends Controller
             return redirect()->back()->with('error', 'Input is invalid: ' . $barks);
         }
 
-        $bark = new \App\Models\Bark;
+        $bark = new \App\Models\Bark();
         $bark->message = $barks;
         $bark->user_id = $userId;
         $bark->save();
@@ -25,12 +26,12 @@ class BarkController extends Controller
         return redirect()->back();
     }
 
-    function validateBark($sentence) {
+    public function validateBark($sentence)
+    {
         if (strlen($sentence) > 500) {
             return false;
         }
 
-        // dd(str_ends_with($sentence, "Bark"));
         if (strlen($sentence) < 5 && !str_ends_with($sentence, "Bark")) {
             return false;
         }
