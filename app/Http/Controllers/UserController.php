@@ -21,7 +21,7 @@ class UserController extends Controller
         $feedType = $request->input('feed', 'home');
 
         if ($feedType == 'home') {
-            $feed = $user->barks()->orderBy('created_at', 'desc')->get();
+            $feed = $user->barks()->orderBy('created_at', 'asc')->get();
         } else {
             // Unnecessary nested loop, we can use a query instead, avoiding the N+1 problem, and optimize for memory usage
             $friendIds = $user->friends()->pluck('friends.friend_id');
