@@ -3,37 +3,66 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bark;
+use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('users.index', [
-            'users' => \App\Models\User::orderBy('id', 'asc')->get()
+            'users' => User::orderBy('id', 'asc')->get()
         ]);
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, $id): View
     {
         $user = \App\Models\User::find($id);
-
         $feedType = $request->input('feed', 'home');
+        $feed = $this->getBarks($feedType, $id);
 
+        return view('users.show', [
+            'user' => $user,
+            'feedType' => $feedType,
+            'feed' => $feed
+        ]);
+    }
+
+    public function loadBarks(Request $request, $id)
+    {
+        $feedType = $request->input('feed', 'home');
+        $feed = $this->getBarks($feedType, $id);
+        return view('partials.barks', [
+            'feedType' => $feedType,
+            'feed' => $feed
+        ])->render();
+    }
+
+    public function getBarks(string $feedType, string $userId): LengthAwarePaginator
+    {
+        $user = User::find($userId);
+        $page = request('page', 1);
         if ($feedType == 'home') {
-            $cacheKey = "user_{$id}_home_feed";
+            $cacheKey = "user_{$userId}_home_feed_page_{$page}";
             // Cache the feed to avoid unnecessary database queries
             $feed = Cache::remember($cacheKey, $minutes = 60, function () use ($user) {
-                return $user->barks()->orderBy('created_at', 'desc')->get();
+                return $user
+                    ->barks()
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10);
             });
         } else {
             // Unnecessary nested loop, we can use a query instead, avoiding the N+1 problem, and optimize for memory usage
-            $cacheKey = "user_{$id}_friends_feed";
+            $cacheKey = "user_{$userId}_feed_page_{$page}";
             // Cache the feed to avoid unnecessary database queries
             $feed = Cache::remember($cacheKey, $minutes = 60, function () use ($user) {
                 $friendIds = $user->friends()->pluck('friends.friend_id');
-                return Bark::whereIn('user_id', $friendIds)->orderBy('created_at', 'desc')->get();
+                return Bark::whereIn('user_id', $friendIds)
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10);
             });
 //            $friends = $user->friends;
 //            $feed = [];
@@ -46,10 +75,6 @@ class UserController extends Controller
 
 //        $feed = collect($feed)->sortBy([['created_at', 'desc']]);
 
-        return view('users.show', [
-            'user' => \App\Models\User::find($id),
-            'feedType' => $feedType,
-            'feed' => $feed
-        ]);
+        return $feed;
     }
 }
