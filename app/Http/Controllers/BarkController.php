@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
 class BarkController extends Controller
@@ -20,7 +21,12 @@ class BarkController extends Controller
         $bark->message = $barks;
         $bark->user_id = $userId;
         $bark->save();
-
+        // Forget cached home feed of each friend
+        $user->friends->each(function ($friend) {
+            Cache::forget("user_{$friend->id}_friends_feed_page_1");
+        });
+        // Forget cached home feed of the user (barker)
+        Cache::forget("user_{$userId}_home_feed_page_1");
         Mail::to($user)->send(new \App\Mail\BarkCreated($bark));
 
         return redirect()->back();
