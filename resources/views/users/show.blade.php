@@ -60,8 +60,10 @@
             <div id="feed-container">
                 @include('partials.barks', ['feed' => $feed, 'feedType' => $feedType])
             </div>
-            <div id="loading">Loading...</div>
+            {{--<div id="loading">Loading...</div>--}}
         </div>
-        @vite(['resources/js/infiniteScroll.js'])
+        {{ $feed->links() }}
+        {{--Otherwise, we can use infiniteScrolling for better UX--}}
+        {{--@vite(['resources/js/infiniteScroll.js'])--}}
     </body>
 </html>

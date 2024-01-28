@@ -7,7 +7,7 @@ window.onscroll = function () {
 let isLoading = false;
 let nextPage = 2;
 const userId = document.body.getAttribute('data-user-id');
-
+const loading = document.getElementById('loading');
 function loadMoreBarks() {
     // Prevent multiple simultaneous requests
     if (isLoading) {
@@ -24,14 +24,14 @@ function loadMoreBarks() {
                 document.getElementById('feed-container').innerHTML += data;
                 nextPage++;
                 isLoading = false;
-                document.getElementById('loading').style.display = 'none';
+                loading.style.display = 'none';
             } else {
                 window.onscroll = null;
-                document.getElementById('loading').innerText = 'No more barks to load.';
+                loading.innerText = 'No more barks to load.';
             }
         })
         .catch(error => {
-            document.getElementById('loading').style.display = 'Sorry, there was an error loading more barks.';
+            loading.style.innerText = 'Error loading barks.';
         })
         .finally(() => {
             console.log('arakse dld posa barks thes');
