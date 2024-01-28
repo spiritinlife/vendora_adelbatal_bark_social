@@ -10,15 +10,13 @@ class BarkController extends Controller
 {
     public function store(Request $request, $userId)
     {
-        $barks = $request->message;
+        $barkData = $request->message;
         $user = \App\Models\User::find($userId);
 
-        if (!$this->validateBark($barks)) {
-            return redirect()->back()->with('error', 'Input is invalid: ' . $barks);
-        }
+        $this->validateBark($request);
 
         $bark = new \App\Models\Bark();
-        $bark->message = $barks;
+        $bark->message = $barkData;
         $bark->user_id = $userId;
         $bark->save();
         // Forget cached home feed of each friend
@@ -32,16 +30,29 @@ class BarkController extends Controller
         return redirect()->back();
     }
 
-    public function validateBark($sentence)
+    private function validateBark($request): void
     {
-        if (strlen($sentence) > 500) {
-            return false;
-        }
+        $request->validate([
+            'message' => [
+                'required',
+                'string',
+                'max:500',
+                'min:4',
+                fn ($attribute, $value, $fail) => $this->validateFourLettersBark($attribute, $value, $fail),
+            ],
+        ], [
+            'message.required' => 'A bark message is required.',
+            'message.min' => 'The bark message must be at least :min characters.',
+            'message.max' => 'A bark cannot be more than 500 characters.',
+        ]);
 
-        if (strlen($sentence) < 5 && !str_ends_with($sentence, "Bark")) {
-            return false;
-        }
+    }
 
-        return true;
+    private function validateFourLettersBark($attribute, $value, $fail): void
+    {
+        if (strlen($value) === 4 && $value !== 'Bark') {
+            $fail('If the bark message is 4 characters, it can only be the word "Bark".');
+        }
     }
 }
+
