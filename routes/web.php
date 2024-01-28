@@ -16,4 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [\App\Http\Controllers\UserController::class, 'index']);
 
 Route::get('/users/{id}', [\App\Http\Controllers\UserController::class, 'show']);
+
 Route::post('/users/{id}/barks', [\App\Http\Controllers\BarkController::class, 'store']);
+Route::get('/user/{id}/barks', [\App\Http\Controllers\UserController::class, 'loadBarks']);
