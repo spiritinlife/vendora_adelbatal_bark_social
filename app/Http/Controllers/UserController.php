@@ -35,6 +35,7 @@ class UserController extends Controller
     {
         $feedType = $request->input('feed', 'home');
         $feed = $this->getBarks($feedType, $id);
+
         return view('partials.barks', [
             'feedType' => $feedType,
             'feed' => $feed
@@ -49,32 +50,22 @@ class UserController extends Controller
             $cacheKey = "user_{$userId}_home_feed_page_{$page}";
             // Cache the feed to avoid unnecessary database queries
             $feed = Cache::remember($cacheKey, $minutes = 60, function () use ($user) {
+
                 return $user
                     ->barks()
                     ->orderBy('created_at', 'desc')
                     ->paginate(10);
             });
         } else {
-            // Unnecessary nested loop, we can use a query instead, avoiding the N+1 problem, and optimize for memory usage
             $cacheKey = "user_{$userId}_feed_page_{$page}";
-            // Cache the feed to avoid unnecessary database queries
             $feed = Cache::remember($cacheKey, $minutes = 60, function () use ($user) {
                 $friendIds = $user->friends()->pluck('friends.friend_id');
+
                 return Bark::whereIn('user_id', $friendIds)
                     ->orderBy('created_at', 'desc')
                     ->paginate(10);
             });
-//            $friends = $user->friends;
-//            $feed = [];
-//            foreach ($friends as $friend) {
-//                foreach ($friend->barks as $bark) {
-//                    $feed []= $bark;
-//                }
-//            }
         }
-
-//        $feed = collect($feed)->sortBy([['created_at', 'desc']]);
-
         return $feed;
     }
 }
