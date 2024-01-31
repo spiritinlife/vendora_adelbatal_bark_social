@@ -31,7 +31,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function loadBarks(Request $request, $id)
+    public function loadBarks(Request $request, $id): string
     {
         $feedType = $request->input('feed', 'home');
         $feed = $this->getBarks($feedType, $id);
