@@ -20,7 +20,7 @@ class AddContentSecurityPolicyHeader
     {
         $response = $next($request);
 
-        $cspPolicy = "default-src 'self'; script-src 'self'; style-src 'self';";
+        $cspPolicy = "script-src 'self';";
 
         $response->header('Content-Security-Policy', $cspPolicy);
 
