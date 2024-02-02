@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BarkController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [\App\Http\Controllers\UserController::class, 'index']);
+Route::get('/', [UserController::class, 'index'])->name('users.index');
 
-Route::get('/users/{id}', [\App\Http\Controllers\UserController::class, 'show']);
-
-Route::post('/users/{id}/barks', [\App\Http\Controllers\BarkController::class, 'store']);
-Route::get('/user/{id}/barks', [\App\Http\Controllers\UserController::class, 'loadBarks']);
+Route::prefix('users')->group(function () {
+    Route::get('/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::post('/{id}/barks', [BarkController::class, 'store'])->name('barks.store');
+    Route::get('/{id}/barks', [UserController::class, 'loadBarks'])->name('users.loadBarks');
+});
