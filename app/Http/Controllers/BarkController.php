@@ -17,8 +17,11 @@ class BarkController extends Controller
 
     public function store(BarkRequest $request, $userId): RedirectResponse
     {
-        $this->barkService->createBark($userId, $request->message);
-
-        return redirect()->back();
+        try {
+            $this->barkService->createBark($userId, $request->message);
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors($e->getMessage());
+        }
     }
 }
