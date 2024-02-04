@@ -12,17 +12,16 @@ class BarkService
 {
     public function createBark($userId, $message): Bark
     {
-        $bark = new Bark();
         $user = User::find($userId);
 
-        $bark->message = $message;
-        $bark->user_id = $userId;
+        $bark = Bark::create([
+            'message' => $message,
+            'user_id' => $userId
+        ]);
+
         $bark->save();
 
-        // Forget cached home feed of each friend
-        $this->forgetCachedFriendsFeed($userId);
-        // Forget cached home feed of the user (barker)
-        $this->forgetCachedHomeFeed($userId);
+        $this->forgetBarksCache($userId);
         $this->sendBarkCreatedEmail($bark, $user);
 
         return $bark;
@@ -30,11 +29,11 @@ class BarkService
 
     private function sendBarkCreatedEmail($bark, $user): void
     {
-        SendBarkCreatedEmailJob::dispatch($bark, $user)->onQueue('emails');
+        SendBarkCreatedEmailJob::dispatch($bark, $user);
     }
 
     private function forgetBarksCache($userId): void
     {
-        ForgetBarksCacheJob::dispatch($userId)->onQueue('cache');
+        ForgetBarksCacheJob::dispatch($userId);
     }
 }
