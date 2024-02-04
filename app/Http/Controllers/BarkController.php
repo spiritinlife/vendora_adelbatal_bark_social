@@ -2,40 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\BarkRequest;
+use App\Services\BarkService;
+use Illuminate\Http\RedirectResponse;
 
 class BarkController extends Controller
 {
-    public function store(Request $request, $userId)
+    protected BarkService $barkService;
+
+    public function __construct(BarkService $barkService)
     {
-        $barks = $request->message;
-        $user = \App\Models\User::find($userId);
-
-        if (!$this->validateBark($barks)) {
-            return redirect()->back()->with('error', 'Input is invalid: ' . $barks);
-        }
-
-        $bark = new \App\Models\Bark();
-        $bark->message = $barks;
-        $bark->user_id = $userId;
-        $bark->save();
-
-        Mail::to($user)->send(new \App\Mail\BarkCreated($bark));
-
-        return redirect()->back();
+        $this->barkService = $barkService;
     }
 
-    public function validateBark($sentence)
+    public function store(BarkRequest $request, $userId): RedirectResponse
     {
-        if (strlen($sentence) > 500) {
-            return false;
+        try {
+            $this->barkService->createBark($userId, $request->message);
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors($e->getMessage());
         }
-
-        if (strlen($sentence) < 5 && !str_ends_with($sentence, "Bark")) {
-            return false;
-        }
-
-        return true;
     }
 }

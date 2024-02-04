@@ -2,41 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
-    public function index()
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    public function index(): View
     {
         return view('users.index', [
-            'users' => \App\Models\User::orderBy('id', 'asc')->get()
+            'users' => $this->userService->getUsers()
         ]);
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, string $userId): View
     {
-        $user = \App\Models\User::find($id);
-
-        $feedType = $request->input('feed', 'home');
-
-        if ($feedType == 'home') {
-            $feed = $user->barks;
-        } else {
-            $friends = $user->friends;
-            $feed = [];
-            foreach ($friends as $friend) {
-                foreach ($friend->barks as $bark) {
-                    $feed []= $bark;
-                }
-            }
+        $feedType = $request->input('feed', UserService::FEED_TYPE_HOME);
+        $feed = $this->userService->getBarks($userId, $feedType);
+        $user = $this->userService->getUser($userId);
+        if (!$user) {
+            abort(404);
         }
 
-        $feed = collect($feed)->sortBy([['created_at', 'desc']]);
-
         return view('users.show', [
-            'user' => \App\Models\User::find($id),
+            'user' => $user,
             'feedType' => $feedType,
             'feed' => $feed
         ]);
+    }
+
+    public function loadBarks(Request $request, string $userId): string
+    {
+        $feedType = $request->input('feed', UserService::FEED_TYPE_HOME);
+        $feed = $this->userService->getBarks($userId, $feedType);
+
+        return view('partials.barks', [
+            'feedType' => $feedType,
+            'feed' => $feed
+        ])->render();
     }
 }

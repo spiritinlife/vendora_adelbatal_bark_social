@@ -48,37 +48,22 @@
 
         </style>
     </head>
-    <body class="antialiased p-6">
+    <body class="antialiased p-6" data-user-id="{{ $user->id }}">
         <h2>{{$user->name}}</h2>
         <button class="{{$feedType === 'home' ? 'active' : ''}}"><a href="?feed=home">Home feed</a></button>
         <button class="{{$feedType === 'friends' ? 'active' : ''}}"><a href="?feed=friends">Friends feed</a></button>
 
         @if($feedType === 'home')
-            <div>
-                <form action="/users/{{$user->id}}/barks" method="POST">
-                    @csrf
-                    <h3>What's barking?</h3>
-                    <textarea rows="3" cols="50" name="message">{{ old('message') ?? 'Bark' }}</textarea><br>
-                    @if (session()->has('error'))
-                        <div class="error">
-                            {!! session()->get('error') !!}
-                        </div>
-                    @endif
-                    <input type="submit" value="Bark">
-                </form>
-            </div>
+           @include('partials.barkSubmissionForm', ['user' => $user])
         @endif
         <div>
-            @foreach($feed as $bark)
-                <article>
-                    @if($feedType === 'friends')
-                        <a href="/users/{{$bark->user->id}}">{{$bark->user->name}} barked:</a>
-                    @endif
-                    <p>{!!$bark->message!!}</p>
-                    <small>{{$bark->created_at}}</small>
-                </article>
-                <hr>
-            @endforeach
+            <div id="feed-container">
+                @include('partials.barks', ['feed' => $feed, 'feedType' => $feedType])
+            </div>
+            {{--<div id="loading">Loading...</div>--}}
         </div>
+        {{ $feed->links() }}
+        {{--Otherwise, we can use infiniteScrolling for better UX--}}
+        {{--@vite(['resources/js/infiniteScroll.js'])--}}
     </body>
 </html>
