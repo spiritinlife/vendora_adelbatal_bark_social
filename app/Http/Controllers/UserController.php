@@ -22,11 +22,14 @@ class UserController extends Controller
         ]);
     }
 
-    public function show(Request $request, $userId): View
+    public function show(Request $request, string $userId): View
     {
         $feedType = $request->input('feed', UserService::FEED_TYPE_HOME);
         $feed = $this->userService->getBarks($userId, $feedType);
         $user = $this->userService->getUser($userId);
+        if (!$user) {
+            abort(404);
+        }
 
         return view('users.show', [
             'user' => $user,
@@ -35,7 +38,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function loadBarks(Request $request, $userId): string
+    public function loadBarks(Request $request, string $userId): string
     {
         $feedType = $request->input('feed', UserService::FEED_TYPE_HOME);
         $feed = $this->userService->getBarks($userId, $feedType);
