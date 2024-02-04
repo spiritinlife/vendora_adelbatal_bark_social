@@ -16,10 +16,12 @@ class ForgetBarksCacheJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected string $userId;
+    private UserService $userService;
 
-    public function __construct($userId)
+    public function __construct($userId, UserService $userService)
     {
         $this->userId = $userId;
+        $this->userService = $userService;
     }
 
     public function handle(): void
@@ -31,7 +33,7 @@ class ForgetBarksCacheJob implements ShouldQueue
     private function forgetCachedHomeFeed($userId): void
     {
         $user = User::find($userId);
-        $pages = (new UserService())->getOwnPaginatedBarks($user)->lastPage();
+        $pages = $this->userService->getOwnPaginatedBarks($user)->lastPage();
         collect(range(1, $pages))->each(fn($page) => (
         Cache::forget("user_{$userId}_home_feed_page_{$page}")
         ));
@@ -40,9 +42,8 @@ class ForgetBarksCacheJob implements ShouldQueue
     private function forgetCachedFriendsFeed($userId): void
     {
         $user = User::find($userId);
-        $userService = new UserService();
-        $user->friends->each(function ($friend) use ($userService){
-            $pages = $userService->getFriendsPaginatedBarks($friend)->lastPage();
+        $user->friends->each(function ($friend) {
+            $pages = $this->userService->getFriendsPaginatedBarks($friend)->lastPage();
             collect(range(1, $pages))->each(fn($page) => (
             Cache::forget("user_{$friend->id}_friends_feed_page_{$page}")
             ));
