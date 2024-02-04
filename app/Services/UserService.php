@@ -46,7 +46,7 @@ class UserService
         });
     }
 
-    private function getFriendsPaginatedBarks($user): LengthAwarePaginator
+    public function getFriendsPaginatedBarks($user): LengthAwarePaginator
     {
         $friendIds = $user->friends()->pluck('friends.friend_id');
 
@@ -55,7 +55,7 @@ class UserService
             ->paginate(10);
     }
 
-    private function getOwnPaginatedBarks($user): LengthAwarePaginator
+    public function getOwnPaginatedBarks($user): LengthAwarePaginator
     {
         return $user
             ->barks()
