@@ -29,11 +29,11 @@ class BarkService
 
     private function sendBarkCreatedEmail($bark, $user): void
     {
-        SendBarkCreatedEmailJob::dispatch($bark, $user);
+        SendBarkCreatedEmailJob::dispatch($bark, $user)->onQueue('emails');
     }
 
     private function forgetBarksCache($userId): void
     {
-        ForgetBarksCacheJob::dispatch($userId);
+        ForgetBarksCacheJob::dispatch($userId)->onQueue('forget-cache');
     }
 }
